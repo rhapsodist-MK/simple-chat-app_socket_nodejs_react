@@ -22,8 +22,9 @@ io.on('connection', (socket) => {
     socket.emit('message', { user: 'admin', text: `${user.name}, welcome to the room ${user.room}`})
     // 입장한 유저 이외에 방에 존재하는 유저들에게 메세지를 보냄
     socket.broadcast.to(user.room).emit('message', { user: 'admin', text: `${user.name}, has joined!`})
-
     socket.join(user.room)
+    io.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room) })
+
     callback()
   })
 
@@ -32,12 +33,16 @@ io.on('connection', (socket) => {
     const user = getUser(socket.id)
 
     io.to(user.room).emit('message', { user: user.name, text: message})
+    io.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room) })
     callback()
   })
 
 
   socket.on('disconnect', () => {
-    console.log('user had left!')
+    const user = removeUser(socket.id)
+    if (user) {
+      io.to(user.room).emit('message', { user: 'admin', text: `${user.name} has left.`})
+    }
   })
 })
 

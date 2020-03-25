@@ -2,6 +2,12 @@ import React, { useState, useEffect } from 'react'
 import queryString from 'query-string' // url에서 query를 처리해주는 모듈
 import io from 'socket.io-client'
 
+import './Chat.css'
+
+import InfoBar from '../InfoBar/InfoBar'
+import Input from '../Input/Input'
+import Messages from '../Messages/Messages.js'
+
 let socket;
 
 export default ({ location }) => {
@@ -46,11 +52,15 @@ export default ({ location }) => {
   return (
     <div className="outerContainer">
       <div className="container">
-        <input 
-          type="text" 
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          onKeyPress={(e) => e.key === 'Enter' ? sendMessage(e) : null}
+        <InfoBar room={room} />        
+        <Messages 
+          messages={messages}
+          name={name}
+        />
+        <Input 
+          message={message}
+          setMessage={setMessage}
+          sendMessage={sendMessage}
         />
       </div>
     </div>
