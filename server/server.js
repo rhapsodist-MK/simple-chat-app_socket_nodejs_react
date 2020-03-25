@@ -10,6 +10,14 @@ const io = socketio(server)
 
 const router = require('./router')
 
+io.on('connection', (socket) => {
+  console.log('we have a new connection!!!!!!!!')
+
+  socket.on('disconnect', () => {
+    console.log('user had left!')
+  })
+})
+
 app.use(router)
 
 server.listen(PORT, () => { console.log(`Server has started on port ${PORT}`) })
